@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('styles'); ?>
+    
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
+  </head>
+  <body>
+    
+    <div id="loginView" class="login-container">
+      <h1>AVA Lents</h1>
+      <div class="form-group">
+        <label for="user">User</label>
+        <input type="text" id="user">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password">
+      </div>
+      
+      <button id="btnLogin">Login</button>
+      
+      <div id="statusMessage"></div>
+    </div>
+
+    <div id="dashboardView">
+      
+      <nav class="sidebar-left">
+        <div class="user-profile">
+          <h2 id="userName">Nombre Apellido</h2>
+          <p id="userEmail">email@dominio.com</p>
+        </div>
+        
+        <ul class="nav-menu">
+          <li id="nav-timeline" class="active">tasks</li>
+          <li id="nav-comments">coments</li>
+          <li id="nav-gantt">Gantt</li>
+        </ul>
+        
+        <div class="logo-footer">
+          AVA Lents
+        </div>
+      </nav>
+
+      <main class="main-content">
+        
+        <div id="viewsContainer">
+
+          <div id="timelineView">
+            <header>
+              <div>
+                <h1>Tarks Completed</h1>
+                <p id="dateRangeLabel">Cargando...</p>
+              </div>
+              <div class="header-controls">
+                <select id="monthFilter" style="display: none;"></select>
+                <button id="btnOpenTaskModal" class="btn-primary">+ Nueva Tarea</button>
+              </div>
+            </header>
+            <div id="completedTasksChart"></div>
+            <section id="taskTimeline">
+              <h3>Today</h3>
+              <div class="task-item-placeholder"><span>Cargando tareas...</span></div>
+            </section>
+          </div>
+          
+          <div id="commentsView" style="display: none;">
+            <header>
+              <h1>Tareas con Comentarios</h1>
+            </header>
+            <section id="commentsTaskList">
+              </section>
+          </div>
+          
+          <div id="ganttView" style="display: none;">
+            <header class="gantt-header">
+              <h1>Diagrama de Gantt</h1>
+              <div class="header-controls">
+                <select id="ganttUserFilter">
+                  <option value="all">Todos los usuarios</option>
+                  </select>
+              </div>
+            </header>
+            <section id="ganttChartContainer">
+              </section>
+          </div>
+
+        </div> </main>
+
+      <aside class="sidebar-right">
+        
+        <section class="metrics-panel">
+          
+          <div class="kpi-item">
+            <div class="kpi-header">
+              <h4>Tiempo de gestion</h4>
+              <span id="kpi-time-value">0h</span> </div>
+            <div class="kpi-progress-bar-container dual-color">
+              <div id="kpi-time-bar" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="kpi-item">
+            <div class="kpi-header">
+              <h4>Tareas Pendientes</h4>
+              <span id="kpi-pending-value">0</span>
+            </div>
+            <div class="kpi-progress-bar-container">
+              <div id="kpi-pending-bar" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="kpi-item">
+            <div class="kpi-header">
+              <h4>Tareas Completadas</h4>
+              <span id="kpi-completed-value">0</span>
+            </div>
+            <div class="kpi-progress-bar-container">
+              <div id="kpi-completed-bar" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="kpi-item">
+            <div class="kpi-header">
+              <h4>Tareas Reprogramadas</h4>
+              <span id="kpi-rescheduled-value">0</span>
+            </div>
+            <div class="kpi-progress-bar-container">
+              <div id="kpi-rescheduled-bar" style="width: 0%;"></div>
+            </div>
+          </div>
+          
+        </section>
+        
+        <section class="comments-panel">
+          <h4>coments</h4>
+          <div id="commentsContainer">
+            <p class="comments-placeholder">Seleccione una tarea para ver sus comentarios.</p>
+          </div>
+          <div class="new-comment-box" style="display: none;"> 
+            <textarea id="newCommentText" rows="3" placeholder="Escribir un comentario..."></textarea>
+            <button id="btnAddNewComment" class="btn-primary">Enviar</button>
+          </div>
+        </section>
+      </aside>
+
+    </div> <div id="taskModal" class="modal-overlay">
+      <div class="modal-content">
+        <h2>Crear Nueva Tarea</h2>
+        <form id="taskForm">
+          <div class="form-group-modal">
+            <label for="taskTitulo">Título</label>
+            <input type="text" id="taskTitulo" required>
+          </div>
+          <div class="form-grid">
+            <div class="form-group-modal">
+              <label for="taskTag">Tag (Categoría)</label>
+              <input type="text" id="taskTag" required>
+            </div>
+            <div class="form-group-modal">
+              <label for="taskColor">Color</label>
+              <input type="color" id="taskColor" value="#d9534f">
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group-modal">
+              <label for="taskInicioFecha">Fecha Inicio (Planificada)</label>
+              <input type="date" id="taskInicioFecha" required>
+            </div>
+            <div class="form-group-modal">
+              <label for="taskInicioHora">Hora Inicio</label>
+              <select id="taskInicioHora" required></select>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group-modal">
+              <label for="taskFinFecha">Fecha Fin (Planificada)</label>
+              <input type="date" id="taskFinFecha" required>
+            </div>
+            <div class="form-group-modal">
+              <label for="taskFinHora">Hora Fin</label>
+              <select id="taskFinHora" required></select>
+            </div>
+          </div>
+          <div class="form-group-modal">
+            <label for="taskResponsable">Responsable</label>
+            <select id="taskResponsable" required>
+              <option value="">Cargando usuarios...</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button type="button" id="btnCancelTask" class="btn-secondary">Cancelar</button>
+            <button type="submit" id="btnSaveTask" class="btn-primary">Guardar Tarea</button>
+          </div>
+        </form>
+        <div id="taskStatusMessage"></div>
+      </div>
+    </div>
+
+    <div id="rescheduleModal" class="modal-overlay">
+      <div class="modal-content">
+        <h2>Reprogramar Tarea</h2>
+        <h3 id="rescheduleTaskTitle">ID - Título de la Tarea</h3>
+        <form id="rescheduleForm">
+          <input type="hidden" id="rescheduleTaskId">
+          <div class="form-grid">
+            <div class="form-group-modal">
+              <label for="rescheduleInicioFecha">Nueva Fecha Inicio</label>
+              <input type="date" id="rescheduleInicioFecha" required>
+            </div>
+            <div class="form-group-modal">
+              <label for="rescheduleInicioHora">Nueva Hora Inicio</label>
+              <select id="rescheduleInicioHora" required></select>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group-modal">
+              <label for="rescheduleFinFecha">Nueva Fecha Fin</label>
+              <input type="date" id="rescheduleFinFecha" required>
+            </div>
+            <div class="form-group-modal">
+              <label for="rescheduleFinHora">Nueva Hora Fin</label>
+              <select id="rescheduleFinHora" required></select>
+            </div>
+          </div>
+          <div class="form-group-modal">
+            <label for="rescheduleReason">Motivo de la Reprogramación</label>
+            <textarea id="rescheduleReason" rows="3" required></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="button" id="btnCancelReschedule" class="btn-secondary">Cancelar</button>
+            <button type="submit" id="btnSaveReschedule" class="btn-primary">Reprogramar</button>
+          </div>
+        </form>
+        <div id="rescheduleStatusMessage"></div>
+      </div>
+    </div>
+
+    <div id="commentsModal" class="modal-overlay">
+      <div class="modal-content">
+        <h2 id="commentsModalTitle">Comentarios de la Tarea</h2>
+        <div id="commentsModalList" class="commentsContainer-modal">
+          </div>
+        <div class="form-actions">
+          <button type="button" id="btnCloseCommentsModal" class="btn-secondary">Cerrar</button>
+        </div>
+      </div>
+    </div>
+
+    <?!= include('script'); ?>
+  </body>
+</html>
